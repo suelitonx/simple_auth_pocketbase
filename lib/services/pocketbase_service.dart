@@ -1,18 +1,19 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const String ipPocketbase = "http://127.0.0.1:8090";
 
+final pbServiceProvider = ChangeNotifierProvider<PocketbaseService>((ref) => PocketbaseService());
+
 class PocketbaseService extends ChangeNotifier {
   PocketBase pb = PocketBase(ipPocketbase);
 
+  bool duplicate = false;
+
   PocketbaseService() {
     validateLogin();
-
-    pb.authStore.onChange.listen((event) {
-      notifyListeners();
-    });
   }
 
   Future<void> validateLogin() async {
@@ -33,6 +34,13 @@ class PocketbaseService extends ChangeNotifier {
         pb.authStore.clear();
       });
     }
+
+    pb.authStore.onChange.listen((event) {
+      if (kDebugMode) {
+        print('authStore.onChange');
+      }
+      notifyListeners();
+    });
 
     notifyListeners();
   }

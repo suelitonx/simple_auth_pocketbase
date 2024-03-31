@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../services/pocketbase_service.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<PocketbaseService>(context, listen: false).logout();
+              ref.read(pbServiceProvider.notifier).logout();
             },
             icon: const Icon(Icons.logout),
           ),
@@ -32,24 +32,31 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text('Welcome to Home Page', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              if (Provider.of<PocketbaseService>(context).pb.authStore.model.data["name"] != null)
+              if (ref.watch(pbServiceProvider).pb.authStore.model.data["name"] != null)
                 ListTile(
                   leading: const Icon(Icons.person_rounded),
                   title: const Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(Provider.of<PocketbaseService>(context).pb.authStore.model.data["name"]),
+                  subtitle: Text(ref.watch(pbServiceProvider).pb.authStore.model.data["name"]),
                 ),
-              if (Provider.of<PocketbaseService>(context).pb.authStore.model.data["name"] != null)
+              if (ref.watch(pbServiceProvider).pb.authStore.model.data["name"] != null)
                 ListTile(
                   leading: const Icon(Icons.email_rounded),
                   title: const Text('Email', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(Provider.of<PocketbaseService>(context).pb.authStore.model.data["email"]),
+                  subtitle: Text(ref.watch(pbServiceProvider).pb.authStore.model.data["email"]),
                 ),
-              if (Provider.of<PocketbaseService>(context).pb.authStore.model.data["name"] != null)
+              if (ref.watch(pbServiceProvider).pb.authStore.model.data["name"] != null)
                 ListTile(
                   leading: const Icon(Icons.account_box_rounded),
                   title: const Text('Username', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(Provider.of<PocketbaseService>(context).pb.authStore.model.data["username"]),
+                  subtitle: Text(ref.watch(pbServiceProvider).pb.authStore.model.data["username"]),
                 ),
+              ListTile(
+                leading: const Icon(Icons.navigate_next_rounded),
+                title: const Text("GO OTHER PAGE"),
+                onTap: () {
+                  context.push('/other');
+                },
+              ),
             ],
           ),
         ),

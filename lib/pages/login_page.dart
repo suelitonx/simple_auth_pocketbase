@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pbauth/services/pocketbase_service.dart';
 import 'package:pbauth/widgets/button_login.dart';
 import 'package:pbauth/widgets/custom_textfield.dart';
-import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends ConsumerState<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -90,10 +90,10 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    bool result = await Provider.of<PocketbaseService>(context, listen: false).login(
-      email: emailController.text,
-      password: passwordController.text,
-    );
+    bool result = await ref.read(pbServiceProvider.notifier).login(
+          email: emailController.text,
+          password: passwordController.text,
+        );
 
     if (result == false) {
       if (mounted) {
@@ -117,11 +117,11 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    bool result = await Provider.of<PocketbaseService>(context, listen: false).register(
-      email: emailController.text,
-      password: passwordController.text,
-      name: nameController.text,
-    );
+    bool result = await ref.read(pbServiceProvider).register(
+          email: emailController.text,
+          password: passwordController.text,
+          name: nameController.text,
+        );
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

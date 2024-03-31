@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/pocketbase_service.dart';
 
-class AdminPage extends StatefulWidget {
+class AdminPage extends ConsumerStatefulWidget {
   const AdminPage({super.key});
 
   @override
-  State<AdminPage> createState() => _AdminPageState();
+  AdminPageState createState() => AdminPageState();
 }
 
-class _AdminPageState extends State<AdminPage> {
+class AdminPageState extends ConsumerState<AdminPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +18,7 @@ class _AdminPageState extends State<AdminPage> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<PocketbaseService>(context, listen: false).logout();
+              ref.read(pbServiceProvider).logout();
             },
             icon: const Icon(Icons.logout),
           ),
